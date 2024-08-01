@@ -8,7 +8,12 @@ const environment = process.env['ENVIRONMENT']
 const hostedZoneId = process.env['ZONE_ID']
 const domainName = process.env['DOMAIN_NAME']
 const wildcardCertificateArn = process.env['WILDCARD_CERTIFICATE_ARN']
-const BRANCH_NAME = process.env['BRANCH_NAME']
+const branchName = process.env['BRANCH_NAME']
 
 new PreviewEnvironmentStack(app, 'PreviewEnvironmentStack', {
+    environment,
+    hostedZoneId,
+    domainName,
+    wildcardCertificateArn,
+    branchName,
 });
