@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -29,28 +29,31 @@ jobs:
 
       - name: Deploy to AWS using CDK
         run: |
-          npm install -g aws-cdk
-          cdk deploy --all --require-approval never
+          yarn cdk deploy --require-approval never
         env:
           BRANCH_NAME: ${{ github.head_ref }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          ZONE_ID: ${{ inputs.ZONE_ID }}
+          DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
+          WILDCARD_CERTIFICATE_ARN: ${{ inputs.WILDCARD_CERTIFICATE_ARN }}
 
   destroy:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -58,7 +61,10 @@ jobs:
 
       - name: Destroy AWS resources using CDK
         run: |
-          npm install -g aws-cdk
-          cdk destroy --all --force
+            yarn cdk deploy --require-approval never
         env:
           BRANCH_NAME: ${{ github.head_ref }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          ZONE_ID: ${{ inputs.ZONE_ID }}
+          DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
+          WILDCARD_CERTIFICATE_ARN: ${{ inputs.WILDCARD_CERTIFICATE_ARN }}
